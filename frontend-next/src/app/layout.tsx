@@ -24,7 +24,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = null;
+  const user = true;
   return (
     <html lang="en">
       <body className="items-center justify-center bg-[#0f172a] text-[#E2E8F0] ">

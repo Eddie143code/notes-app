@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const PORT = 3000;
+const PORT = 3001;
 
 app.get("/ping", (_req, res) => {
   console.log("someone pinged here");
@@ -16,6 +16,7 @@ app.get("/ping", (_req, res) => {
 
 app.post("/user/create", async (req, res) => {
   console.log("in /user/create");
+  console.log(req.body)
   try {
     const user = await prisma.user.create({
       data: req.body,

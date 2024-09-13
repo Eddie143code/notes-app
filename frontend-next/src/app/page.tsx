@@ -7,7 +7,7 @@ type noteData = {
 };
 
 export default function Home() {
-  const user = null;
+  const user = false;
   if (!user) redirect("/auth/login");
   const data: noteData[] = [
     { id: 0, content: "Yo" },

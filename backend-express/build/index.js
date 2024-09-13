@@ -19,13 +19,14 @@ const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(cors());
-const PORT = 3000;
+const PORT = 3001;
 app.get("/ping", (_req, res) => {
     console.log("someone pinged here");
     res.send("pong");
 });
 app.post("/user/create", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("in /user/create");
+    console.log(req.body);
     try {
         const user = yield prisma.user.create({
             data: req.body,

@@ -1,12 +1,15 @@
-"use client";
+'use client'
 
-import { useRouter } from "next/navigation";
+import { signup } from "@/actions/auth";
+import { redirect} from "next/navigation";
 import React from "react";
 
 const page = () => {
-  const router = useRouter();
-  const handleSubmit = (e: any) => {
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+    const a = await signup()
+    console.log(a)
   };
   return (
     <main className="md:min-w-[400px]">
@@ -23,12 +26,6 @@ const page = () => {
           <input name="password"></input>
           <button type="submit" className="bg-[#94a3b8]">
             Submit
-          </button>
-          <button
-            className="bg-[#94a3b8]"
-            onClick={() => router.push("/auth/signup")}
-          >
-            Sign up
           </button>
         </form>
       </div>
