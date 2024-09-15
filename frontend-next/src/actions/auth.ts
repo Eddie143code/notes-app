@@ -1,7 +1,36 @@
 "use server"
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
+
+export const getCookies = async () => {
+    const cookieStore = cookies();
+    const userEmail = cookieStore.get("userEmail")?.value;
+  
+    if (!userEmail) {
+      // Use Next.js server-side redirect
+      redirect("/auth/login");
+    }
+  
+    const response = await fetch("http://localhost:3001/user/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: userEmail }), // Send email in the request body
+      credentials: "include", // Send cookies with the request
+    });
+  
+    const result = await response.json();
+    if (!response.ok) {
+      redirect("/auth/login");
+    }
+  
+    return result; // Return result for further use if needed
+  };
+
 export const signup = async () => {
     const payload = JSON.stringify({
-        email: "g@example.com",
+        email: "z@example.com",
         password: "m134"
     });
 
@@ -20,23 +49,22 @@ export const signup = async () => {
 
         const data = await response.json(); // Corrected method name
         console.log(data); // Log the parsed JSON data
-        // localStorage.setItem('user', data)
     } catch (error) {
         console.error('Error:', error);
     }
 };
 
 
-export const sigin = async () => {
-    const payload = JSON.stringify({
+// export const sigin = async () => {
+//     const payload = JSON.stringify({
+//         email: "z@example.com",
+//     })
 
-        email: "e@example.com",
-        password: "m134"
-
-    })
-    const response = fetch('http://localhost:3001/user/me', {
-        method: "POST",
-        body: payload
-    }).then((res: any) => res.JSON())
-    console.log(response)
-}
+// await fetch('http://localhost:3001/user/me', {
+//         method: "POST",
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: payload,
+//     })
+// }

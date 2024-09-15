@@ -14,34 +14,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors = require("cors");
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use(cors());
+app.use((0, cookie_parser_1.default)());
+app.use(cors({
+    origin: 'http://localhost:3000', // Update with your Next.js client URL
+    credentials: true // Allow cookies to be sent
+}));
 const PORT = 3001;
-app.get("/ping", (_req, res) => {
+app.get("/ping", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = verifyCookies(req.cookies);
+    if (!email)
+        return res.status(404);
     console.log("someone pinged here");
     res.send("pong");
-});
-app.post("/user/create", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("in /user/create");
-    console.log(req.body);
+}));
+app.post('/user/create', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield prisma.user.create({
-            data: req.body,
+        // Check if email already exists
+        const existingUser = yield prisma.user.findUnique({
+            where: { email: req.body.email },
         });
-        console.log(user);
-        return res.json(user);
+        if (existingUser) {
+            // Return an error response if email is already taken
+            return res.status(400).json({ error: 'Email already in use' });
+        }
+        // Create the new user
+        const user = yield prisma.user.create({
+            data: {
+                email: req.body.email,
+                password: req.body.password,
+            },
+        });
+        res.status(201).json(user);
     }
     catch (error) {
         console.error(error);
-        return res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: 'An error occurred while creating the user' });
     }
 }));
+// Example Express route with cookie handling
 app.post("/user/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("in user/me");
-    console.log("Request body:", req.body); // Log the request body
+    // const email = verifyCookies(req.cookies);
     try {
         const { email } = req.body; // Extract email from request body
         console.log("Extracted email:", email); // Log the extracted email
@@ -50,7 +67,6 @@ app.post("/user/me", (req, res) => __awaiter(void 0, void 0, void 0, function* (
             console.log("in !email");
             return res.status(400).json({ error: "Email is required" });
         }
-        console.log("after email check");
         // Find the user by email
         const user = yield prisma.user.findFirst({
             where: {
@@ -61,14 +77,39 @@ app.post("/user/me", (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-        console.log(user);
-        return res.json(user);
+        // Set a cookie (e.g., user ID or session token)
+        res.cookie('userEmail', user.email, {
+            httpOnly: true, // Helps prevent cross-site scripting (XSS) attacks
+            secure: process.env.NODE_ENV === 'development', // Use secure cookies in production
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+        });
+        return res.send();
     }
     catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Internal server error" });
     }
 }));
+app.post("/user/verify", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const email = yield verifyCookies(req.cookies);
+    console.log('email: ' + JSON.stringify(email));
+    console.log('in verify');
+    return res.json(email);
+}));
+// Verify cookies function
+const verifyCookies = (cookies) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userEmail } = cookies;
+    const user = yield prisma.user.findFirst({
+        where: {
+            email: userEmail,
+        },
+    });
+    if (!user) {
+        console.log('no user with that email');
+        return false;
+    }
+    return user;
+});
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
