@@ -1,11 +1,19 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+const session = require("express-session");
 const cors = require("cors");
 
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+app.use(session({
+  secret: "1234", // replace with a secure secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
 
 const PORT = 3001;
 
