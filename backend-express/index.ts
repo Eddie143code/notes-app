@@ -1,5 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+const session = require("express-session");
 import cookieParser from 'cookie-parser';
 const cors = require("cors");
 
@@ -11,6 +12,13 @@ app.use(cookieParser())
 app.use(cors({
   origin: 'http://localhost:3000', // Update with your Next.js client URL
   credentials: true // Allow cookies to be sent
+}));
+
+app.use(session({
+  secret: "1234", // replace with a secure secret key
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
 }));
 
 const PORT = 3001;

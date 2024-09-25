@@ -3,12 +3,19 @@ import { cookies } from "next/headers";
 
 import { redirect } from "next/navigation";
 
+import { GetServerSideProps } from "next";
+import { cookies } from "next/headers";
+
 type noteData = {
   id: number;
   content: string;
 };
 
-export default async function Home({children}: any) {
+export default function Home() {
+  const cookieStore = cookies();
+  const user = cookieStore.get('userSession')
+  console.log('user: ' + user)
+  if (!user) redirect("/auth/login");
 
   const data: noteData[] = [
     { id: 0, content: "Yo" },
