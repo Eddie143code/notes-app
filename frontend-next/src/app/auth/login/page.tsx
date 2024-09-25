@@ -1,15 +1,16 @@
 "use client";
 
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const handleSubmit = async (e: any) => {
    e.preventDefault()
-    
+      // Accessing the email value from the event object
+      const email = e.target.elements.email.value;
    const payload = JSON.stringify({
-        email: "g@example.com",
+        email: email,
         
     })
 
@@ -57,4 +58,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

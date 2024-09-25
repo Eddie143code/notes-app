@@ -7,7 +7,7 @@ const Layout = ({ children }: any) => {
         <h1>Login</h1>
         {/* <h2>Hello, [user]</h2> */}
       </header>
-      {children}
+      <div className="flex flex-col items-center justify-center h-full w-full bg-[64748B]">{children}</div> 
     </>
   );
 };
