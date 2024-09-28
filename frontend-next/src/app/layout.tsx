@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-// import localFont from "next/font/local";
 import "./globals.css";
-
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -26,11 +24,8 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="items-center justify-center bg-[#0f172a] text-[#E2E8F0] ">
-      {children}
-        <div className="flex flex-col items-center justify-center h-full w-full bg-[64748B]">
-
-        </div>
+      <body className="flex flex-col items-center justify-center h-full w-full bg-[#0f172a] text-[#E2E8F0] ">
+        {children}
       </body>
     </html>
   );

@@ -1,17 +1,21 @@
-'use client'
+"use client";
 
 import { signup } from "@/actions/auth";
+import { useRouter } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const Page = () => {
+  const router = useRouter();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
-    console.log(email, password)
-    const a = await signup({email, password})
-    console.log(a)
+
+    const a = await signup({ email, password });
+
+    router.push("/auth/login");
   };
   return (
     <main className="md:min-w-[400px]">
@@ -35,4 +39,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
