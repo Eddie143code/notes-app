@@ -23,6 +23,7 @@ const Page = () => {
         credentials: 'include'
     })
     console.log(response)
+    if(response.ok) router.push('/')
   };
 
   const handlePing = async () => {

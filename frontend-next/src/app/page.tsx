@@ -1,16 +1,23 @@
-import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+
 
 type noteData = {
   id: number;
   content: string;
 };
 
-export default function Home() {
-  const cookieStore = cookies();
-  const user = cookieStore.get('userSession')
-  console.log('user: ' + user)
-  if (!user) redirect("/auth/login");
+export default async function Home() {
+  // const cookieStore = cookies();
+  // const user = cookieStore.get('userSession')
+//   const response = await fetch('http://localhost:3001/user/me', {
+//     method: "POST",
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(user),
+//     credentials: 'include'
+// })
+// console.log(response.ok)
+  // if (!response.ok) redirect("/auth/login");
   const data: noteData[] = [
     { id: 0, content: "Yo" },
     { id: 1, content: "Yes" },

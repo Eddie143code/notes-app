@@ -89,7 +89,7 @@ app.post("/user/me", async (req, res: any) => {
     // Set a cookie (e.g., user ID or session token)
     res.cookie('userEmail', user.email, {
       httpOnly: true, // Helps prevent cross-site scripting (XSS) attacks
-      secure: process.env.NODE_ENV === 'development', // Use secure cookies in production
+      secure:  false, // process.env.NODE_ENV === 'development', // Use secure cookies in production
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
     return res.send()
@@ -100,30 +100,47 @@ app.post("/user/me", async (req, res: any) => {
 });
 
 app.post("/user/verify", async (req, res: any) => {
-  const email = await verifyCookies(req.cookies);
-  console.log('email: ' + JSON.stringify(email))
-  console.log('in verify')
+  const cookies = req.cookies
+  // console.log(`cookies: ${cookies}`)
+  const email = await verifyCookies(cookies);
+  // console.log('email: ' + JSON.stringify(email))
+  // console.log('in verify')
   return res.json(email)
 
 })
 
-// Verify cookies function
 const verifyCookies = async (cookies: any) => {
-  const { userEmail } = cookies
-
-  const user = await prisma.user.findFirst({
-    where: {
-      email: userEmail,
-    },
-  });
-
-  if (!user) {
-    console.log('no user with that email')
+  // Make sure to directly access cookies
+  const userEmail = cookies.userEmail; // Accessing directly from the cookies object
+  
+  if (!userEmail) {
+    console.log('No user email found in cookies.');
     return false;
   }
 
-  return user;
-}
+  console.log('In verifyCookies: ', userEmail);
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: userEmail,
+      },
+    });
+
+    console.log('User found: ', user);
+
+    if (!user) {
+      console.log('No user with that email');
+      return false;
+    }
+
+    return user; // Return user object if found
+  } catch (error) {
+    console.error('Error while verifying user:', error);
+    return false; // Return false on error
+  }
+};
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
