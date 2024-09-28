@@ -1,8 +1,8 @@
 "use server"
-export const signup = async () => {
+export const signup = async ({email, password}: any) => {
     const payload = JSON.stringify({
-        email: "z@example.com",
-        password: "m134"
+        email: email,
+        password: password
     });
 
     try {

@@ -1,14 +1,16 @@
 'use client'
 
 import { signup } from "@/actions/auth";
-import { redirect} from "next/navigation";
 import React from "react";
 
 const page = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const a = await signup()
+    const email = e.target.elements.email.value;
+    const password = e.target.elements.password.value;
+    console.log(email, password)
+    const a = await signup({email, password})
     console.log(a)
   };
   return (
