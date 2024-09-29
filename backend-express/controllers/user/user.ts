@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { verifyCookies } from "../../utils/ping";
+import { verifyCookies } from "../../utils/verifyCookies";
 
 const userRouter = Router();
 import { prisma } from "../../utils/prismaClient";
 
 // Sign up
-userRouter.post("/user/create", async (req: any, res: any) => {
+userRouter.post("/create", async (req: any, res: any) => {
+  console.log("in note create");
   try {
     // Check if email already exists
     const existingUser = await prisma.user.findUnique({
@@ -34,7 +35,7 @@ userRouter.post("/user/create", async (req: any, res: any) => {
 });
 
 // Sign in
-userRouter.post("/user/me", async (req, res: any) => {
+userRouter.post("/me", async (req, res: any) => {
   try {
     const { email } = req.body;
 
@@ -67,7 +68,8 @@ userRouter.post("/user/me", async (req, res: any) => {
   }
 });
 
-userRouter.post("/user/verify", async (req, res: any) => {
+// Verify
+userRouter.post("/verify", async (req, res: any) => {
   const cookies = req.cookies;
   const email = await verifyCookies(cookies);
 

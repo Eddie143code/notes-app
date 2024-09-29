@@ -3,8 +3,9 @@ import cookieParser from "cookie-parser";
 const session = require("express-session");
 const cors = require("cors");
 
-import { verifyCookies } from "./utils/ping";
+import { verifyCookies } from "./utils/verifyCookies";
 import userRouter from "./controllers/user/user";
+import noteRouter from "./controllers/note/note";
 
 const app = express();
 
@@ -17,8 +18,14 @@ app.use(
   })
 );
 
+// app.use("/note", (req, res, next) => {
+//   console.log("Note router reached");
+//   next();
+// });
+
 // Router
-app.use(userRouter);
+app.use("/user", userRouter);
+app.use("/note", noteRouter);
 
 app.use(
   session({

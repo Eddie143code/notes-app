@@ -16,8 +16,9 @@ const express_1 = __importDefault(require("express"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const session = require("express-session");
 const cors = require("cors");
-const ping_1 = require("./utils/ping");
+const verifyCookies_1 = require("./utils/verifyCookies");
 const user_1 = __importDefault(require("./controllers/user/user"));
+const note_1 = __importDefault(require("./controllers/note/note"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
@@ -25,8 +26,13 @@ app.use(cors({
     origin: "http://localhost:3000", // Update with your Next.js client URL
     credentials: true, // Allow cookies to be sent
 }));
+// app.use("/note", (req, res, next) => {
+//   console.log("Note router reached");
+//   next();
+// });
 // Router
-app.use(user_1.default);
+app.use("/user", user_1.default);
+app.use("/note", note_1.default);
 app.use(session({
     secret: "1234", // replace with a secure secret key
     resave: false,
@@ -36,7 +42,7 @@ app.use(session({
 const PORT = 3001;
 // ping
 app.get("/ping", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const email = (0, ping_1.verifyCookies)(req.cookies);
+    const email = (0, verifyCookies_1.verifyCookies)(req.cookies);
     if (!email)
         return res.status(404);
     console.log("someone pinged here");

@@ -10,11 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const ping_1 = require("../../utils/ping");
+const verifyCookies_1 = require("../../utils/verifyCookies");
 const userRouter = (0, express_1.Router)();
 const prismaClient_1 = require("../../utils/prismaClient");
 // Sign up
-userRouter.post("/user/create", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+userRouter.post("/create", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("in note create");
     try {
         // Check if email already exists
         const existingUser = yield prismaClient_1.prisma.user.findUnique({
@@ -39,7 +40,7 @@ userRouter.post("/user/create", (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 }));
 // Sign in
-userRouter.post("/user/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+userRouter.post("/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = req.body;
         if (!email) {
@@ -68,9 +69,10 @@ userRouter.post("/user/me", (req, res) => __awaiter(void 0, void 0, void 0, func
         return res.status(500).json({ error: "Internal server error" });
     }
 }));
-userRouter.post("/user/verify", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Verify
+userRouter.post("/verify", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const cookies = req.cookies;
-    const email = yield (0, ping_1.verifyCookies)(cookies);
+    const email = yield (0, verifyCookies_1.verifyCookies)(cookies);
     return res.json(email);
 }));
 exports.default = userRouter;
