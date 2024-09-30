@@ -1,10 +1,10 @@
 import { cookies } from "next/headers";
 import React from "react";
 
-type noteData = {
-  id: number;
-  content: string;
-};
+// type noteData = {
+//   id: number;
+//   content: string;
+// };
 
 const Layout = ({ children }: any) => {
   const cookieStore = cookies();

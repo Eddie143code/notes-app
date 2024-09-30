@@ -1,26 +1,30 @@
-import { cookies } from "next/headers";
+import { cookies } from "next/headers"; // For server-side cookies
 
-type noteData = {
-  id: number;
-  content: string;
-};
+// type noteData = {
+//   id: number;
+//   content: string;
+// };
 
-export default async function Home() {
-  const data: noteData[] = [
-    { id: 0, content: "Yo" },
-    { id: 1, content: "Yes" },
-    { id: 2, content: "Yup" },
-    { id: 3, content: "Yep" },
-  ];
+import Notes from "@/components/notes/note";
+
+export default async function Page() {
+  // Get the cookie on the server side
+  const userEmail = cookies().get("userEmail")?.value;
+  
+  const response: any = await fetch('http://localhost:3001/note/all', {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `userEmail=${userEmail}`, // Add the cookie to the headers
+      },
+      credentials: "include", // Important for including cookies
+
+  })
+
+  const data = await response.json();
   return (
     <main className="">
-      {data.map((note: noteData) => {
-        return (
-          <div key={note.id} className="p-2">
-            {note.content}
-          </div>
-        );
-      })}
+      <Notes data={data}/>
     </main>
   );
 }
