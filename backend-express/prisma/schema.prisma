@@ -15,11 +15,19 @@ model User {
   email    String @unique
   password String
   notes    Note[]
+  List List[]
 }
 
 model Note {
   id       Int     @id @default(autoincrement())
   content  String?
   author   User    @relation(fields: [authorId], references: [id])
+  authorId Int
+}
+
+model List {
+  id       Int    @id @default(autoincrement())
+  content  String?
+  author   User   @relation(fields: [authorId], references: [id])
   authorId Int
 }
